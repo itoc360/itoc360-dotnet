@@ -33,11 +33,14 @@ jobs:
       # hour, so no long-lived secret is stored in this repository. NuGet.org
       # now caps manually created keys at 30 days, which would mean rotating a
       # secret every month otherwise.
+      # `user` is the nuget.org account that CREATED the trust policy, not the
+      # GitHub organization that owns the repository. Getting it wrong fails the
+      # token exchange with a 401 and no package is pushed.
       - name: Authenticate with NuGet.org
         uses: NuGet/login@v1
         id: login
         with:
-          user: itoc360
+          user: talhabektas
 
       - name: Push
         run: >
