@@ -1,0 +1,11 @@
+<Solution>
+  <Folder Name="/examples/">
+    <Project Path="examples/Basic/Basic.csproj" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/ITOC360.Sdk/ITOC360.Sdk.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/ITOC360.Sdk.Tests/ITOC360.Sdk.Tests.csproj" />
+  </Folder>
+</Solution>

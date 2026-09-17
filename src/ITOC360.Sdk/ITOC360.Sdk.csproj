@@ -1,0 +1,50 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+
+    <!-- The package builds without a single external reference: everything it
+         needs (HttpClient, System.Text.Json) ships in the framework. -->
+    <RootNamespace>Itoc360</RootNamespace>
+    <AssemblyName>ITOC360.Sdk</AssemblyName>
+
+    <!-- Trimming and native AOT are supported because no payload is ever
+         serialised through reflection; see Itoc360Client.SendRawAsync. -->
+    <IsTrimmable>true</IsTrimmable>
+    <IsAotCompatible>true</IsAotCompatible>
+  </PropertyGroup>
+
+  <PropertyGroup Label="Package">
+    <PackageId>ITOC360.Sdk</PackageId>
+    <Version>0.1.0</Version>
+    <Authors>ITSERV Technology</Authors>
+    <Company>ITSERV Technology</Company>
+    <Product>ITOC360</Product>
+    <Description>Official .NET SDK for ITOC360. Sends alerts to an ITOC360 source over its webhook endpoint, with no external dependencies.</Description>
+    <PackageTags>itoc360;alerting;monitoring;incident;observability;oncall;webhook</PackageTags>
+    <PackageProjectUrl>https://itoc360.com</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/itoc360/itoc360-dotnet</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="../../README.md" Pack="true" PackagePath="/" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="../../LICENSE" Pack="true" PackagePath="/" />
+  </ItemGroup>
+
+</Project>

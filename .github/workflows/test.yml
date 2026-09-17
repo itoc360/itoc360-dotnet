@@ -1,0 +1,64 @@
+name: Test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # Both runtimes are installed so the suite runs against every framework
+      # the package targets, not only the newest one.
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: |
+            8.0.x
+            10.0.x
+
+      - name: Restore
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --no-restore --configuration Release
+
+      - name: Test
+        run: dotnet test --no-build --configuration Release --verbosity normal
+
+  pack:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      # Packing in CI catches a broken package before a release does: a missing
+      # README, an unset licence expression or an unresolvable symbol package
+      # all fail here rather than at the point of publishing.
+      - name: Pack
+        run: dotnet pack src/ITOC360.Sdk/ITOC360.Sdk.csproj --configuration Release --output artifacts
+
+      - name: Show package contents
+        run: |
+          for package in artifacts/*.nupkg; do
+            echo "== $package"
+            unzip -l "$package"
+          done
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nupkg
+          path: artifacts/*

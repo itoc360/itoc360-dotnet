@@ -1,0 +1,47 @@
+name: Publish
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+  # Required by trusted publishing: without it the OIDC token request fails
+  # silently and the login step never receives a key.
+  id-token: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: |
+            8.0.x
+            10.0.x
+
+      - name: Test
+        run: dotnet test --configuration Release
+
+      - name: Pack
+        run: dotnet pack src/ITOC360.Sdk/ITOC360.Sdk.csproj --configuration Release --output artifacts
+
+      # Exchanges a GitHub OIDC token for a NuGet.org API key that lives one
+      # hour, so no long-lived secret is stored in this repository. NuGet.org
+      # now caps manually created keys at 30 days, which would mean rotating a
+      # secret every month otherwise.
+      - name: Authenticate with NuGet.org
+        uses: NuGet/login@v1
+        id: login
+        with:
+          user: itoc360
+
+      - name: Push
+        run: >
+          dotnet nuget push 'artifacts/*.nupkg'
+          --api-key '${{ steps.login.outputs.NUGET_API_KEY }}'
+          --source https://api.nuget.org/v3/index.json
+          --skip-duplicate
